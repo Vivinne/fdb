@@ -8,6 +8,7 @@ studentCollection.insert({
 
 $(document).ready(function() {
 	studentCollection.load(detaload);
+	$("#table-tbody").on("click", ".col", colClick);
 
 });
 console.log(studentCollection.find());
@@ -40,13 +41,13 @@ function creatDeta() {
 }
 
 function updataTable(datas) {
-	$("#tabel-tbody").find("tr").remove();
+	$("#table-tbody").find("tr").remove();
 
 	for (var i = 0; i < datas.length; i++) {
-		$("#tabel-tbody").append(
-		"<tr>" + 
+		$("#table-tbody").append(
+		"<tr class='col'>" + 
 		"<td>" + (i+1) + "</td>" +　
-		"<td>" + datas[i]._id + "</td>" +
+		"<td class='dataID'>" + datas[i]._id + "</td>" +
 		"<td>" + datas[i].name + "</td>" +
 		"</tr>"
 		);
@@ -55,3 +56,17 @@ function updataTable(datas) {
 }
 
 
+function colClick() {
+	var ID = $(this).find(".dataID").text();
+	var query = {
+    _id : ID
+};
+	$("#modal-body").find("p").remove();
+	var studentData = studentCollection.find(query);
+	$("#modal-body").append(
+		"<p>ID： " + studentData[0]._id + "</p>" +
+		"<p>name： " + studentData[0].name + "</p>" +
+		"<p>age： " + studentData[0].age + "</p>" 
+	);
+	$("#mymodal").modal("show");
+}
