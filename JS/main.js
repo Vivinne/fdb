@@ -7,29 +7,38 @@ studentCollection.insert({
 });
 
 $(document).ready(function() {
-	studentCollection.load(detaload);
+	studentCollection.load(dataload);
 	$("#table-tbody").on("click", ".dataID", colIDClick);
 	$("#table-tbody").on("click", ".btn-danger", btnDeleteClick);
+	$("#table-tbody").on("click", ".btn-warning", btnEditClick);
+
+	$("#btn-insertData").on("click", insertData);
+
+	$("#btnSave").on("click", saveUpdateData);
+	$("#btnLimitSearch").on("click", limitSearch);
+
 
 });
+
+
 //console.log(studentCollection.find());
 
 // studentCollection.load(callback);
 
-function detaload(){
-	// creatDeta();
+function dataload(){
+	// creatdata();
 	console.log(studentCollection.find());
 	updataTable(studentCollection.find());
 }
 
-function detaSave() {
-	console.log("deta Save");
+function dataSave() {
+	console.log("data Save");
 	updataTable(studentCollection.find());
 
 }
 
-function creatDeta() {
-	console.log("creatDeta");
+function creatdata() {
+	console.log("creatdata");
 	for (var i = 0; i < 20; i++) {
 		studentCollection.insert({
 			name : String.fromCharCode(Math.floor((Math.random() * 26) + 65),
@@ -39,8 +48,35 @@ function creatDeta() {
 		});
 	}
 	console.log(studentCollection.find());
-	studentCollection.save(detaSave);
+	studentCollection.save(dataSave);
 }
+
+
+
+
+
+function insertData() {
+	var name = $("#name1").val();
+	var age = $("#age1").val();
+
+	 if (name != "undefined" && age != "undefined") {
+		studentCollection.insert({
+			name : name,
+			age : age
+		})
+
+		studentCollection.save(dataSave);
+
+
+	 }
+}
+
+
+
+
+
+
+
 
 function updataTable(datas) {
 	$("#table-tbody").find("tr").remove();
@@ -78,10 +114,67 @@ function colIDClick() {
 function btnDeleteClick() {
 	var ID = $(this).closest("tr").find(".dataID").text();
 	if (!confirm("確地要刪除？")) {return;}
-	studentCollection.save(detaSave);
+	studentCollection.save(dataSave);
 	studentCollection.remove({
     _id: ID
 });
-
-	
 };
+
+function btnEditClick() {
+	var ID = $(this).closest("tr").find(".dataID").text();
+	var query = {
+    _id : ID
+	}
+	var studentData = studentCollection.find(query);
+	$("#modalName").val(studentData[0].name);	
+	$("#modalAge").val(studentData[0].age);
+	$("#EditModal").attr("studentsID", ID);
+	$("#EditModal").modal("show");
+
+};
+
+
+
+
+
+function saveUpdateData() {
+	var name = $("#modalName").val();
+	var age = $("#modalAge").val();
+	var ID	= $("#EditModal").attr("studentsID");
+
+	 if (name != "undefined" || age != "undefined") {
+		var newData = {
+			name : name,
+			age : age
+		}
+
+    studentCollection.updateById(ID, newData);
+    $("#EditModal").modal("hide");
+
+	studentCollection.save(dataSave);
+
+
+
+
+	 }
+
+}
+
+
+
+function limitSearch() {
+	console.log("limitSearch");
+	var edtGT = $("#edtGT").val();
+	var edtLT = $("#edtLT").val();
+
+	var datas = studentCollection.find({
+        "$gt": edtGT,
+        "$lt": edtLT
+    
+});
+
+updataTable(datas);
+
+
+
+}
