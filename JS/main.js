@@ -163,18 +163,18 @@ function saveUpdateData() {
 
 
 function limitSearch() {
-	console.log("limitSearch");
 	var edtGT = $("#edtGT").val();
 	var edtLT = $("#edtLT").val();
 
-	var datas = studentCollection.find({
+	var datas = 
+	studentCollection.find({
         "$gt": edtGT,
         "$lt": edtLT
-    
-});
+    });
 
 updataTable(datas);
+studentCollection.save(dataSave);
 
 
 
-}
+};
