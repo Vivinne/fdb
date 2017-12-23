@@ -16,6 +16,7 @@ $(document).ready(function() {
 
 	$("#btnSave").on("click", saveUpdateData);
 	$("#btnLimitSearch").on("click", limitSearch);
+	$("#btnCertainSearch").on("click", certainSearch);
 
 
 });
@@ -44,7 +45,7 @@ function creatdata() {
 			name : String.fromCharCode(Math.floor((Math.random() * 26) + 65),
 				Math.floor((Math.random() * 26) + 97),
 				Math.floor((Math.random() * 26) + 97)),
-			age : Math.floor((Math.random() * 7) + 7)
+			age : Math.floor((Math.random() * 5) + 7)
 		});
 	}
 	console.log(studentCollection.find());
@@ -163,18 +164,44 @@ function saveUpdateData() {
 
 
 function limitSearch() {
+	console.log("limitSearch")
 	var edtGT = $("#edtGT").val();
 	var edtLT = $("#edtLT").val();
 
-	var datas = 
-	studentCollection.find({
-        "$gt": edtGT,
-        "$lt": edtLT
-    });
+	var query = {
+		age:{
+	        "$gt": edtGT,
+	        "$lt": edtLT
+	    }
 
-updataTable(datas);
-studentCollection.save(dataSave);
+	};
 
 
+	updataTable(studentCollection.find(query));
+    $("#edtGT").val("");
+	$("#edtLT").val("");
+
+};
+
+function certainSearch() {
+	console.log("certainSearch");
+	var checkbox = $(".cbAge");
+	var checked = [];
+
+	for (var i = 0; i < checkbox.length; i++) {
+		if (checkbox[i].checked) {
+			checked.push(checkbox[i].value * 1);
+
+		}
+	}
+
+	var query =
+	{
+    age: {
+        $in: checked
+    }
+};
+ 
+	updataTable(studentCollection.find(query));
 
 };
